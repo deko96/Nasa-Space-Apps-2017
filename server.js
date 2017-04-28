@@ -6,7 +6,8 @@ var bodyParser = require('body-parser');
 var port = process.env.PORT || 8080;
 
 //Modules
-const logger = require('./libs/logger.js');
+const logger = require('./libs/logger');
+const database = require('./libs/database');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,5 +15,11 @@ app.use(function(req, res) {
     res.status(404).send({ url: req.originalUrl + ' not found' })
 });
 
+database.query('SELECT COUNT(*) as kur FROM `cities`', function(error, data, fields) {
+    if(error) {
+        return logger.error(error);
+    }
+    console.log(data);
+});
 
 app.listen(port);
