@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 
 //Config vars
 var port = process.env.PORT || 8080;
+var googleAPI = require('./libs/googleapi');
 
 //Modules
 const logger = require('./libs/logger');
@@ -16,7 +17,7 @@ app.use(function(req, res) {
 });
 
 database.query('SELECT COUNT(*) as kur FROM `cities`', function(error, data, fields) {
-    if(error) {
+    if (error) {
         return logger.error(error);
     }
     console.log(data);
