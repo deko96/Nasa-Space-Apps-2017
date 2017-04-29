@@ -80,7 +80,10 @@ var BeachesController = function() {
                     });
 
                 } else {
-                    callback(null);
+                    return callback({
+                        status: 204,
+                        message: 'No beaches were found.'
+                    });
                 }
             });
         }
@@ -96,7 +99,10 @@ var BeachesController = function() {
             return next();
         }
         return getBeachesResults(params, function(data) {
-            res.json(data);
+            if (data.status && data.status !== 200) {
+                return res.status(data.status).json(data);
+            }
+            return res.json(data);
         });
     };
 

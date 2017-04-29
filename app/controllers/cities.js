@@ -8,7 +8,10 @@ var CitiesController = function() {
      */
     var getCityResults = function(query, callback) {
         if (typeof query === 'undefined' || query === null || query.length < 3) {
-            return callback(null);
+            return callback({
+                status: 400,
+                message: 'The query word has to be atleast 3 characters.'
+            });
         }
         var params = {
             input: query
@@ -21,7 +24,7 @@ var CitiesController = function() {
                     message: 'Google Responded with an Error message. Please try again!'
                 });
             }
-            callback(response);
+            return callback(response);
         });
     };
 
@@ -36,7 +39,10 @@ var CitiesController = function() {
         }
 
         return getCityResults(query, function(data) {
-            res.json(data);
+            if (data.status && data.status !== 200) {
+                return res.status(data.status).json(data);
+            }
+            return res.json(data);
         });
     };
 

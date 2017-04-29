@@ -20,9 +20,9 @@ module.exports = function(app) {
     app.get('/getBeaches', beachesController.getBeaches);
 
     /**
-     * Betaface Controller
+     * FacePlus Controller
      */
-    app.get('/sendImage', facePlusController.getData);
+    app.post('/processImage', facePlusController.getData);
 
     /**
      * Test Controller
