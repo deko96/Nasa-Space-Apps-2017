@@ -12,6 +12,7 @@ module.exports = function(app) {
      * Get Cities Router
      */
     app.get('/getCities', citiesController.getCities);
+
     /**
      * Get Beaches Router
      */
