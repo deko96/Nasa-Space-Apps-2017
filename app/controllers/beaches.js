@@ -10,6 +10,7 @@ var BeachesController = function() {
 
         if (data.length == parsedArray.length) {
             return callback(parsedArray);
+
         }
 
         var i = parsedArray.length;
@@ -55,13 +56,39 @@ var BeachesController = function() {
     };
 
     /**
+     * Get City Name by Coords
+     */
+    var getCityName = function(coords, callback) {
+
+        if (typeof coords.lat === 'undefined' || typeof coords.long === 'undefined') {
+            return callback(null);
+        }
+        var searchParam = {
+            location: [coords.lat, coords.long],
+            type: 'locality'
+        };
+        return googleAPI.placeSearch(searchParam, function(err, response) {
+            if (err) {
+                return console.log(err);
+            }
+            if (response.results.length > 0) {
+                return callback(response.results[0].name);
+            } else {
+                return callback(null);
+            }
+        });
+
+    };
+
+    /**
      * Get Beaches
      */
     var getBeachesResults = function(params, callback) {
-        if (params.query !== 'undefined') {
+        if (typeof params.query !== 'undefined') {
             var searchOpt = {
                 query: params.query + ' beaches'
             };
+
             return googleAPI.textSearch(searchOpt, function(error, response) {
                 if (error) {
                     Logger.error(error);
@@ -72,11 +99,8 @@ var BeachesController = function() {
                 }
 
                 if (response.results.length > 0) {
-
                     getImages(response.results, [], function(result) {
-
                         return callback(result);
-
                     });
 
                 } else {
@@ -84,6 +108,19 @@ var BeachesController = function() {
                         status: 204,
                         message: 'No beaches were found.'
                     });
+                }
+            });
+        } else if (typeof params.lat !== 'undefined' && typeof params.long !== 'undefined') {
+            return getCityName({
+                lat: params.lat,
+                long: params.long
+            }, function(data) {
+                if (data) {
+                    getBeachesResults({
+                        query: data
+                    }, callback);
+                } else {
+                    return callback(null);
                 }
             });
         }

@@ -7,7 +7,7 @@ openWeatherModule.setAPPID(openWeatherAPI.API_KEY);
 openWeatherModule.setLang('en');
 
 var OpenWeatherController = function() {
-    var baseURL = "http://api.openweathermap.org/v3/uvi/";
+    var baseUviURL = "http://api.openweathermap.org/v3/uvi/";
     var getUv = function(data, getObj, cb) {
 
         rp(getObj)
@@ -36,7 +36,7 @@ var OpenWeatherController = function() {
 
                 lat = parseFloat(lat).toFixed(1);
                 long = parseFloat(long).toFixed(1);
-                var uvIndexURI = baseURL + parseInt(lat) + "," + parseInt(long) + "/current.json?appid=" + openWeatherAPI.API_KEY;
+                var uvIndexURI = baseUviURL + parseInt(lat) + "," + parseInt(long) + "/current.json?appid=" + openWeatherAPI.API_KEY;
                 var getObj = {
                     uri: uvIndexURI,
                     type: "GET",
