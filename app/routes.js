@@ -15,7 +15,8 @@ module.exports = function(app) {
     /**
      * Betaface Controller
      */
-    app.post('/sendImage', betafaceController.getData);
+    app.get('/sendImage', betafaceController.getData);
+
 
     /**
      * 404 Route
