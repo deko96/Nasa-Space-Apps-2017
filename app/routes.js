@@ -5,6 +5,7 @@ var googleAPI = require('../libs/googleapi');
 var citiesController = require('./controllers/cities');
 var beachesController = require('./controllers/beaches');
 var facePlusController = require('./controllers/faceplus');
+var openWeatherController = require("./controllers/openweather");
 
 module.exports = function(app) {
 
@@ -29,6 +30,12 @@ module.exports = function(app) {
     app.post('/testRoute', function(req, res, next) {
         res.json(req.body);
     });
+
+    /**
+     * Open Weather Controller
+     */
+
+    app.get('/getWeather', openWeatherController.getWeather());
 
     /**
      * 404 Route
