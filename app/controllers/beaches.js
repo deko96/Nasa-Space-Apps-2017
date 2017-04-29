@@ -4,6 +4,57 @@ var Logger = require('../../libs/logger');
 var BeachesController = function() {
 
     /**
+     * Get Images for Beaches
+     */
+    var getImages = function(data, parsedArray, callback) {
+
+        if (data.length == parsedArray.length) {
+            return callback(parsedArray);
+        }
+
+        var i = parsedArray.length;
+        var params = {};
+        if (typeof data[i].photos !== 'undefined') {
+            var params = {
+                photoreference: data[i].photos[0].photo_reference || null
+            };
+        }
+
+        var beach = {
+            name: data[i].name,
+            rating: data[i].rating,
+            location: {
+                latitude: data[i].geometry.location.lat,
+                longtitude: data[i].geometry.location.lng
+            }
+        };
+
+        if (params.photoreference) {
+
+            googleAPI.imageFetch(params, function(error, response) {
+
+                if (error) {
+                    Logger.error(error);
+                    return callback({
+                        status: 500,
+                        message: 'Google Responded with an Error message. Please try again!'
+                    });
+                }
+
+                beach['photo'] = response;
+                parsedArray.push(beach);
+                return getImages(data, parsedArray, callback);
+            });
+
+        } else {
+            parsedArray.push(beach);
+            return getImages(data, parsedArray, callback);
+        }
+
+
+    };
+
+    /**
      * Get Beaches
      */
     var getBeachesResults = function(params, callback) {
@@ -19,8 +70,15 @@ var BeachesController = function() {
                         message: 'Google Responded with an Error message. Please try again!'
                     });
                 }
+
                 if (response.results.length > 0) {
-                    return callback(response);
+
+                    getImages(response.results, [], function(result) {
+
+                        return callback(result);
+
+                    });
+
                 } else {
                     callback(null);
                 }

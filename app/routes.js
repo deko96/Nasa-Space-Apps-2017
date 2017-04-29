@@ -4,7 +4,7 @@ var googleAPI = require('../libs/googleapi');
 // Controllers
 var citiesController = require('./controllers/cities');
 var beachesController = require('./controllers/beaches');
-var betafaceController = require('./controllers/betaface');
+var facePlusController = require('./controllers/faceplus');
 
 module.exports = function(app) {
 
@@ -21,8 +21,14 @@ module.exports = function(app) {
     /**
      * Betaface Controller
      */
-    app.get('/sendImage', betafaceController.getData);
+    app.get('/sendImage', facePlusController.getData);
 
+    /**
+     * Test Controller
+     */
+    app.post('/testRoute', function(req, res, next) {
+        res.json(req.body);
+    });
 
     /**
      * 404 Route
