@@ -7,12 +7,18 @@ openWeatherModule.setAPPID(openWeatherAPI.API_KEY);
 openWeatherModule.setLang('en');
 
 var OpenWeatherController = function() {
+    var baseURL = "http://api.openweathermap.org/v3/uvi/";
     var getUv = function(data, getObj, cb) {
-        rp(getObj).then(function(uvData) {
+
+        rp(getObj)
+
+        .then(function(uvData) {
             uvData = JSON.parse(uvData);
             data.uvIndex = uvData.data;
             cb(data);
-        }).catch(function(err) {
+        })
+
+        .catch(function(err) {
             logger.error('Something went wrong with the OpenWeather API !');
             return {
                 status: 'error',
@@ -22,14 +28,14 @@ var OpenWeatherController = function() {
     }
     this.getWeather = function(req, res, next) {
         if (req.query !== 'undefined') {
+
             var lat = req.query.lat,
                 long = req.query.long;
+
             if ((typeof lat !== 'undefined' && typeof long !== 'undefined') && (lat.trim() !== '' && long.trim() !== '')) {
 
                 lat = parseFloat(lat).toFixed(1);
                 long = parseFloat(long).toFixed(1);
-                var baseURL = "http://api.openweathermap.org/v3/uvi/";
-
                 var uvIndexURI = baseURL + parseInt(lat) + "," + parseInt(long) + "/current.json?appid=" + openWeatherAPI.API_KEY;
                 var getObj = {
                     uri: uvIndexURI,
@@ -52,9 +58,7 @@ var OpenWeatherController = function() {
                         });
                     }
                 });
-
             }
-
         } else {
             logger.error('[Lat,Long] not defined at /getWeather');
             return res.json({
