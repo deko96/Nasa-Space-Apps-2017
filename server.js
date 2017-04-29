@@ -10,7 +10,7 @@ const Logger = require('./libs/logger');
 const Database = require('./libs/database');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Router
 const Routers = require('./app/routes')(app);

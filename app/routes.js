@@ -35,7 +35,7 @@ module.exports = function(app) {
      * Open Weather Controller
      */
 
-    app.get('/getWeather', openWeatherController.getWeather());
+    app.get('/getWeather', openWeatherController.getWeather);
 
     /**
      * 404 Route

@@ -21,10 +21,9 @@ var OpenWeatherController = function() {
         });
     }
     this.getWeather = function(req, res, next) {
-        var lat = req.query.lat,
-            long = req.query.long;
         if (req.query !== 'undefined') {
-
+            var lat = req.query.lat,
+                long = req.query.long;
             if ((typeof lat !== 'undefined' && typeof long !== 'undefined') && (lat.trim() !== '' && long.trim() !== '')) {
 
                 lat = parseFloat(lat).toFixed(1);

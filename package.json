@@ -15,7 +15,9 @@
     "express": "^4.15.2",
     "googleplaces": "^0.6.1",
     "mysql": "^2.13.0",
+    "node-accuweather": "^1.7.0",
     "nodemon": "^1.11.0",
+    "openweather-apis": "^3.3.2",
     "request": "^2.81.0",
     "request-promise": "^4.2.0"
   }
