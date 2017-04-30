@@ -28,9 +28,12 @@ var OpenWeatherController = function() {
         })
 
         .then(function(aheadData) {
+
                 var parsedData = JSON.parse(aheadData);
+                parsedData.list.splice(0, 1);
                 data.laterForecast = parsedData.list;
                 cb(data);
+
             })
             .catch(function(err) {
                 console.log(err);
