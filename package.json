@@ -16,6 +16,7 @@
     "googleplaces": "^0.6.1",
     "mysql": "^2.13.0",
     "node-accuweather": "^1.7.0",
+    "node-base64-image": "^1.0.3",
     "nodemon": "^1.11.0",
     "openweather-apis": "^3.3.2",
     "request": "^2.81.0",
