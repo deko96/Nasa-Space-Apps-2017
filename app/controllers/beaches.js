@@ -2,53 +2,58 @@ var googleAPI = require('../../libs/googleapi');
 var Logger = require('../../libs/logger');
 var Request = require('request-promise');
 var BeachesController = function() {
+
     /**
      * Get elevation point
      */
     var EPBaseURL = "https://maps.googleapis.com/maps/api/elevation/json";
-    var getElevation = function(data, array, callback) {
+    // var getElevation = function(data, array, callback) {
+    //     // console.log(data, array);
+    //     if (data.length == array.length) {
+    //         return callback(array);
+    //     }
+    //     i = array.length;
 
-        if (data.length == array.length) {
-            return callback(array);
-        }
-        i = array.length;
+    //     var beach = {
+    //         name: data[i].name,
+    //         rating: data[i].rating,
+    //         location: {
+    //             latitude: data[i].location.latitude,
+    //             longtitude: data[i].location.longtitude
+    //         }
+    //     };
+    //     Request({
+    //             uri: EPBaseURL,
+    //             type: "GET",
+    //             qs: {
+    //                 key: googleAPI.API_KEY,
+    //                 locations: data[i].location.latitude + "," + data[i].location.longtitude
+    //             },
+    //             json: true,
+    //         })
+    //         .then(function(elevationData) {
+    //             console.log(elevationData);
+    //             if (elevationData.status == "OK") {
+    //                 beach.elevation = elevationData.results[0].elevation;
+    //                 beach.resolution = elevationData.results[0].resolution;
+    //                 array.push(beach);
+    //                 // console.log(beach);
+    //                 return getElevation(data, array, callback);
 
-        var beach = {
-            name: data[i].name,
-            rating: data[i].rating,
-            location: {
-                latitude: data[i].location.latitude,
-                longtitude: data[i].location.longtitude
-            }
-        };
-        Request({
-                uri: EPBaseURL,
-                type: "GET",
-                qs: {
-                    key: googleAPI.API_KEY,
-                    locations: data[i].location.latitude + "," + data[i].location.longtitude
-                },
-                json: true,
-            })
-            .then(function(elevationData) {
-                if (elevationData.status == "OK") {
-                    beach.elevation = elevationData.results[0].elevation;
-                    beach.resolution = elevationData.results[0].resolution;
-                    array.push(beach);
-                }
+    //             }
+    //             // console.log(beach);
 
-                return getElevation(data, array, callback);
 
-            })
-            .catch(function(err) {
-                console.log(err);
-                callback({
-                    status: 'error',
-                    message: 'Something is wrong with Google Elevation Search API, please try again later.',
-                });
-            });
+    //         })
+    //         .catch(function(err) {
+    //             console.log(err);
+    //             callback({
+    //                 status: 'error',
+    //                 message: 'Something is wrong with Google Elevation Search API, please try again later.',
+    //             });
+    //         });
 
-    };
+    // };
 
     /**
      * Get Images for Beaches
@@ -112,18 +117,20 @@ var BeachesController = function() {
         }
         var searchParam = {
             location: [coords.lat, coords.long],
-            type: 'locality'
+            type: 'locality',
+            radius: 50000
         };
         return googleAPI.placeSearch(searchParam, function(err, response) {
             if (err) {
                 return console.log(err);
             }
+
             if (response.results.length > 0) {
                 return callback(response.results[0].name);
             } else {
                 return callback({
-                    status: 204,
-                    message: 'No places were found.',
+                    status: 404,
+                    message: 'We werent able to query the city name'
                 });
             }
         });
@@ -135,8 +142,9 @@ var BeachesController = function() {
      */
     var getBeachesResults = function(params, callback) {
         if (typeof params.query !== 'undefined') {
+
             var searchOpt = {
-                query: params.query + ' beaches'
+                query: params.query + ' Beaches'
             };
 
             return googleAPI.textSearch(searchOpt, function(error, response) {
@@ -149,11 +157,13 @@ var BeachesController = function() {
                 }
 
                 if (response.results.length > 0) {
+
                     getImages(response.results, [], function(result) {
                         return callback(result);
                     });
 
                 } else {
+
                     return callback({
                         status: 204,
                         message: 'No beaches were found.'
@@ -162,8 +172,8 @@ var BeachesController = function() {
             });
         } else if (typeof params.lat !== 'undefined' && typeof params.long !== 'undefined') {
             return getCityName({
-                lat: params.lat,
-                long: params.long
+                lat: parseFloat(params.lat).toFixed(4),
+                long: parseFloat(params.long).toFixed(4)
             }, function(data) {
                 if (data) {
                     getBeachesResults({
@@ -171,8 +181,8 @@ var BeachesController = function() {
                     }, callback);
                 } else {
                     return callback({
-                        status: 204,
-                        message: "No beaches were found."
+                        status: 404,
+                        message: 'We werent able to query the city name.. Try again!'
                     });
                 }
             });
@@ -189,12 +199,13 @@ var BeachesController = function() {
             return next();
         }
         return getBeachesResults(params, function(data) {
-            if (data.status && data.status !== 200) {
+            if (typeof data.status !== 'undefined' && data.status !== null && data.status !== 200) {
                 return res.status(data.status).json(data);
             }
-            getElevation(data, [], function(sendData) {
-                res.json(sendData);
-            });
+            // getElevation(data, function() {
+            //     res.json(data);
+            // });
+            return res.json(data);
         });
     };
 
