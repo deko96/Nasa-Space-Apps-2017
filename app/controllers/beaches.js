@@ -119,9 +119,7 @@ var BeachesController = function() {
                 return console.log(err);
             }
             if (response.results.length > 0) {
-                console.log(response.results);
                 return callback(response.results[0].name);
-                //
             } else {
                 return callback({
                     status: 204,
@@ -194,11 +192,9 @@ var BeachesController = function() {
             if (data.status && data.status !== 200) {
                 return res.status(data.status).json(data);
             }
-            // console.log(data);
             getElevation(data, [], function(sendData) {
                 res.json(sendData);
             });
-            // return res.json(data);
         });
     };
 

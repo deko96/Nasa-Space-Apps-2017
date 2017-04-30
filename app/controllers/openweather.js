@@ -42,10 +42,6 @@ var OpenWeatherController = function() {
      */
     var getLaterForecast = function(data, cb) {
         var coords = data.coord;
-        // console.log(data.coord);
-        var reqObj = {
-
-        };
         rp({
             uri: baseLFURL,
             type: 'GET',
